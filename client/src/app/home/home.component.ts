@@ -12,7 +12,6 @@ import { HttpClient } from '@angular/common/http';
 export class HomeComponent {
   registerMode = false;
   http = inject(HttpClient);
-  users: any;
 
   registerToggle() {
     this.registerMode = !this.registerMode;
@@ -20,16 +19,6 @@ export class HomeComponent {
 
   cancelRegisterMode(event: boolean) {
     this.registerMode = event;
-  }
-
-  getUsers() {
-    this.http.get('https://localhost:7107/api/users').subscribe({
-      next: response => this.users = response,
-      error: error => console.log(error),
-      complete: () => {
-        console.log('Request complete');
-      }
-    })
   }
 
 }

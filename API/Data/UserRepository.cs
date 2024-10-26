@@ -11,7 +11,7 @@ namespace API.Data
     {
         public async Task<MemberDto?> GetMemberAsync(string username)
         {
-            return await context.Users.ProjectTo<MemberDto>(mapper.ConfigurationProvider).SingleOrDefaultAsync();
+            return await context.Users.ProjectTo<MemberDto>(mapper.ConfigurationProvider).SingleOrDefaultAsync(m => m.Username == username);
         }
 
         public async Task<IEnumerable<MemberDto>> GetMembersAsync()
