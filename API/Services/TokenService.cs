@@ -17,7 +17,8 @@ namespace API.Services
 
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, user.Username)
+                new(ClaimTypes.NameIdentifier, user.AppUserId.ToString()),
+                new(ClaimTypes.Name, user.Username)
             };
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
