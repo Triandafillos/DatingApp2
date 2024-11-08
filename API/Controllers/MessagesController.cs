@@ -20,15 +20,15 @@ namespace API.Controllers
 
             var sender = await userRepository.GetUserByUsernameAsync(username);
             var recipient = await userRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
-            if (sender == null || recipient == null) return BadRequest("Cannot send the message");
+            if (sender == null || recipient == null || recipient.UserName == null || sender.UserName == null) return BadRequest("Cannot send the message");
 
             var message = new Message
             {
                 Sender = sender,
                 Recipient = recipient,
                 Content = createMessageDto.Content,
-                RecipientUsername = recipient.Username,
-                SenderUsername = sender.Username
+                RecipientUsername = recipient.UserName,
+                SenderUsername = sender.UserName
             };
             messageRepository.AddMessage(message);
             if (await messageRepository.SaveAllAsync()) return Ok(mapper.Map<MessageDto>(message));

@@ -14,13 +14,13 @@ namespace API.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    AppUserId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Username = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.AppUserId);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
         }
 

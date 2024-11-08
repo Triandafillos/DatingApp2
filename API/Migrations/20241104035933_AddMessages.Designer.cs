@@ -22,7 +22,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Entities.AppUser", b =>
                 {
-                    b.Property<int>("AppUserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -72,7 +72,7 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("AppUserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
@@ -128,7 +128,7 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int>("Id")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsMain")
@@ -143,7 +143,7 @@ namespace API.Migrations
 
                     b.HasKey("PhotoId");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("Id");
 
                     b.ToTable("Photos");
                 });
@@ -186,7 +186,7 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Entities.AppUser", "AppUser")
                         .WithMany("Photos")
-                        .HasForeignKey("AppUserId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -87,23 +87,23 @@ namespace API.Migrations
                     Url = table.Column<string>(type: "TEXT", nullable: false),
                     IsMain = table.Column<bool>(type: "INTEGER", nullable: false),
                     PublicId = table.Column<string>(type: "TEXT", nullable: true),
-                    AppUserId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Photos", x => x.PhotoId);
                     table.ForeignKey(
-                        name: "FK_Photos_Users_AppUserId",
-                        column: x => x.AppUserId,
+                        name: "FK_Photos_Users_Id",
+                        column: x => x.Id,
                         principalTable: "Users",
-                        principalColumn: "AppUserId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Photos_AppUserId",
+                name: "IX_Photos_Id",
                 table: "Photos",
-                column: "AppUserId");
+                column: "Id");
         }
 
         /// <inheritdoc />

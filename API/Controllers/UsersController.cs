@@ -27,7 +27,7 @@ namespace API.Controllers
             Response.AddPaginationHeader(users);
             return Ok(users);
         }
-
+        
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {

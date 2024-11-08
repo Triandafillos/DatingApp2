@@ -12,13 +12,13 @@ namespace API.Data
     {
         public async Task<MemberDto?> GetMemberAsync(string username)
         {
-            return await context.Users.ProjectTo<MemberDto>(mapper.ConfigurationProvider).SingleOrDefaultAsync(m => m.Username == username);
+            return await context.Users.ProjectTo<MemberDto>(mapper.ConfigurationProvider).SingleOrDefaultAsync(m => m.Username == username.ToUpper());
         }
 
         public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
             var query = context.Users.AsQueryable();
-            query = query.Where(u => u.Username != userParams.CurrentUsername);
+            query = query.Where(u => u.UserName != userParams.CurrentUsername);
             if(userParams.Gender != null)
             {
                 query = query.Where(u => u.Gender ==  userParams.Gender);
@@ -44,7 +44,7 @@ namespace API.Data
 
         public async Task<AppUser?> GetUserByUsernameAsync(string username)
         {
-            return await context.Users.Include(u => u.Photos).SingleOrDefaultAsync(u => u.Username == username);
+            return await context.Users.Include(u => u.Photos).SingleOrDefaultAsync(u => u.UserName.ToUpper() == username);
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()

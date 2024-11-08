@@ -31,9 +31,9 @@ namespace API.Data
 
             query = messageParams.Container switch
             {
-                "Inbox" => query.Where(m => m.Recipient.Username == messageParams.Username && m.RecipientDeleted == false),
-                "Outbox" => query.Where(m => m.Sender.Username == messageParams.Username && m.SenderDeleted == false),
-                _ => query.Where(m => m.Recipient.Username == messageParams.Username && m.DateRead == null && m.RecipientDeleted == false)
+                "Inbox" => query.Where(m => m.Recipient.UserName == messageParams.Username && m.RecipientDeleted == false),
+                "Outbox" => query.Where(m => m.Sender.UserName == messageParams.Username && m.SenderDeleted == false),
+                _ => query.Where(m => m.Recipient.UserName == messageParams.Username && m.DateRead == null && m.RecipientDeleted == false)
             };
             var messages = query.ProjectTo<MessageDto>(mapper.ConfigurationProvider);
 
@@ -44,11 +44,11 @@ namespace API.Data
         {
             var messages = await context.Messages.Include(m => m.Recipient).ThenInclude(r => r.Photos)
                 .Include(m => m.Sender).ThenInclude(s => s.Photos)
-                .Where(m => m.Recipient.Username == currentUsername && m.RecipientDeleted == false && m.Sender.Username == recipientUsername ||
-                m.Recipient.Username == recipientUsername && m.Sender.Username == currentUsername && m.SenderDeleted == false)
+                .Where(m => m.Recipient.UserName == currentUsername && m.RecipientDeleted == false && m.Sender.UserName == recipientUsername ||
+                m.Recipient.UserName == recipientUsername && m.Sender.UserName == currentUsername && m.SenderDeleted == false)
                 .OrderBy(m => m.MessageSent).ToListAsync();
 
-            var unreadMessages = messages.Where(m => m.DateRead == null && m.Recipient.Username == currentUsername).ToList();
+            var unreadMessages = messages.Where(m => m.DateRead == null && m.Recipient.UserName == currentUsername).ToList();
             if (unreadMessages.Count != 0)
             {
                 unreadMessages.ForEach(m => m.DateRead = DateTime.UtcNow);
