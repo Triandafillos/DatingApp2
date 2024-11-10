@@ -52,11 +52,6 @@ namespace API.Data
             return await context.Users.Include(u => u.Photos).ToListAsync();
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await context.SaveChangesAsync() > 0;
-        }
-
         public void Update(AppUser user)
         {
             context.Entry(user).State = EntityState.Modified;
