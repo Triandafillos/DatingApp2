@@ -94,7 +94,7 @@ namespace API.SignalR
         private async Task<Group> RemoveFromMessageGroup()
         {
             var group = await unitOfWork.MessageRepository.GetGroupForConnection(Context.ConnectionId);
-            var connection = group.Connections.FirstOrDefault(c => c.ConnectionId == Context.ConnectionId);
+            var connection = group?.Connections.FirstOrDefault(c => c.ConnectionId == Context.ConnectionId);
             if (connection != null && group != null)
             {
                 unitOfWork.MessageRepository.RemoveConnection(connection);

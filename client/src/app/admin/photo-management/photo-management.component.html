@@ -1,1 +1,19 @@
-<p>photo-management works!</p>
+<div class="row">
+    <div class="center-text mt-3">
+        <h2>Approve Photos</h2>
+    </div>
+    <div class="container">
+        @for (photos of photosForApproval; track $index) {
+        <h4 class="mt-3">{{photos.username}}</h4>
+        <div class="d-flex">
+            @for (photo of photos.photos; track $index) {
+            <div class="card col-2 me-2" style="position: relative; overflow:hidden;">
+                <img [src]=" photo.url" [alt]="photos.username">
+                <button class="btn btn-success" (click)="approvePhoto(photo.photoId)"><i
+                        class="fa fa-check"></i></button>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>

@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../_models/user';
+import { PhotosForApproval } from '../_models/photo';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,13 @@ export class AdminService {
 
   updateUserRoles(username: string, roles: string[]) {
     return this.http.post<string[]>(this.baseUrl + 'admin/edit-roles/' + username + '?roles=' + roles, {});
+  }
+
+  getPhotosForApproval() {
+    return this.http.get<PhotosForApproval[]>(this.baseUrl + 'admin/photos-to-moderate')
+  }
+
+  approvePhoto(photoId: number) {
+    return this.http.post(this.baseUrl + 'admin/approve-photo/' + photoId, {});
   }
 }

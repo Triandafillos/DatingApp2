@@ -1,4 +1,6 @@
-﻿using API.Entities;
+﻿using API.DTOs;
+using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class AdminController(UserManager<AppUser> userManager) : BaseApiController
+    public class AdminController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork) : BaseApiController
     {
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("users-with-roles")]
@@ -42,9 +44,25 @@ namespace API.Controllers
 
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpGet("photos-to-moderate")]
-        public ActionResult GetPhotosForModeration()
+        public async Task<ActionResult<IEnumerable<PhotoForApprovalDto>>> GetPhotosForModeration()
         {
-            return Ok("You are admin or moderate");
+            var photos = await unitOfWork.UserRepository.GetPhotosForApprovalAsync();
+            return Ok(photos);
+        }
+
+        [Authorize(Policy = "ModeratePhotoRole")]
+        [HttpPost("approve-photo/{photoId}")]
+        public async Task<ActionResult> ApprovePhoto(int photoId)
+        {
+            var photo = await unitOfWork.UserRepository.GetPhotoByIdAsync(photoId);
+            if (photo == null) return BadRequest("Photo not found");
+            photo.IsApproved = true;
+
+            var user = photo.AppUser;
+            if (user.Photos.Count == 1) photo.IsMain = true;
+            await unitOfWork.Complete();
+
+            return Ok();
         }
     }
 }

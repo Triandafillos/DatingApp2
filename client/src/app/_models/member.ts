@@ -1,7 +1,7 @@
 import { Photo } from "./photo"
 
 export interface Member {
-    appUserId: number
+    id: number
     username: string
     age: number
     knownAs: string

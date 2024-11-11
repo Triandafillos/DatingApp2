@@ -10,9 +10,17 @@ namespace API.Data
 {
     public class UserRepository(DataContext context, IMapper mapper) : IUserRepository
     {
+
+        public async Task<MemberDto?> GetMemberAllPhotosAsync(string username)
+        {
+            return await context.Users.IgnoreQueryFilters().ProjectTo<MemberDto>(mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync(m => m.Username!.ToLower() == username.ToLower());
+        }
+
         public async Task<MemberDto?> GetMemberAsync(string username)
         {
-            return await context.Users.ProjectTo<MemberDto>(mapper.ConfigurationProvider).SingleOrDefaultAsync(m => m.Username!.ToLower() == username.ToLower());
+            return await context.Users.ProjectTo<MemberDto>(mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync(m => m.Username!.ToLower() == username.ToLower());
         }
 
         public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
@@ -37,9 +45,30 @@ namespace API.Data
             return await PagedList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(mapper.ConfigurationProvider), userParams.PageNumber, userParams.PageSize);
         }
 
+        public async Task<Photo?> GetPhotoByIdAsync(int id)
+        {
+            return await context.Photos.Include(p => p.AppUser).ThenInclude(u => u.Photos).IgnoreQueryFilters()
+                .FirstOrDefaultAsync(p => p.PhotoId == id);
+        }
+
+        public async Task<IEnumerable<PhotoForApprovalDto>> GetPhotosForApprovalAsync()
+        {
+            return await context.Users.IgnoreQueryFilters().ProjectTo<PhotoForApprovalDto>(mapper.ConfigurationProvider)
+                .Select(u => new PhotoForApprovalDto {
+                    Username = u.Username,
+                    Photos = u.Photos!.Where(p => !p.IsApproved ?? false).ToList()
+                }).Where(u => u.Photos!.Count > 0).ToListAsync();
+        }
+
         public async Task<AppUser?> GetUserByIdAsync(int id)
         {
             return await context.Users.FindAsync(id);
+        }
+
+        public async Task<AppUser?> GetUserByUsernameAllPhotos(string username)
+        {
+            return await context.Users.IgnoreQueryFilters().Include(u => u.Photos)
+                .SingleOrDefaultAsync(u => u.NormalizedUserName == username.ToUpper());
         }
 
         public async Task<AppUser?> GetUserByUsernameAsync(string username)
