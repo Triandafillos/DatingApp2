@@ -31,7 +31,15 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
-            var user = await unitOfWork.UserRepository.GetMemberAsync(username);
+            MemberDto? user;
+            if (username.ToUpper() == User.GetUsername().ToUpper())
+            {
+                user = await unitOfWork.UserRepository.GetMemberAllPhotosAsync(username);
+            }
+            else
+            {
+                user = await unitOfWork.UserRepository.GetMemberAsync(username);
+            }
             if (user == null)
             {
                 return NotFound();
@@ -66,10 +74,9 @@ namespace API.Controllers
             var photo = new Photo
             {
                 Url = result.Url.AbsoluteUri,
-                PublicId = result.PublicId
+                PublicId = result.PublicId,
+                IsApproved = false
             };
-
-            if (user.Photos.Count == 0) photo.IsMain = true;
 
             user.Photos.Add(photo);
 
@@ -88,7 +95,7 @@ namespace API.Controllers
             if (user == null) return BadRequest("User not found");
 
             var photo = user.Photos.FirstOrDefault(p => p.PhotoId == photoId);
-            if (photo == null || photo.IsMain) return BadRequest("Could not set photo to main");
+            if (photo == null || photo.IsMain || !photo.IsApproved) return BadRequest("Could not set photo to main");
 
             var currentMain = user.Photos.FirstOrDefault(p => p.IsMain);
             if (currentMain != null) currentMain.IsMain = false;
@@ -101,7 +108,7 @@ namespace API.Controllers
         [HttpDelete("delete-photo/{photoId:int}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
-            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAllPhotos(User.GetUsername());
             if (user == null) return BadRequest("User not found");
 
             var photo = user.Photos.FirstOrDefault(p => p.PhotoId == photoId);

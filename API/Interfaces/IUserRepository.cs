@@ -10,8 +10,11 @@ namespace API.Interfaces
         Task<IEnumerable<AppUser>> GetUsersAsync();
         Task<AppUser?> GetUserByIdAsync(int id);
         Task<AppUser?> GetUserByUsernameAsync(string username);
+        Task<AppUser?> GetUserByUsernameAllPhotos(string username);
+        Task<Photo?> GetPhotoByIdAsync(int id);
         Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
         Task<MemberDto?> GetMemberAsync(string username);
-
+        Task<MemberDto?> GetMemberAllPhotosAsync(string username);
+        Task<IEnumerable<PhotoForApprovalDto>> GetPhotosForApprovalAsync();
     }
 }
